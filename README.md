@@ -1,2 +1,2 @@
 # News
-Estrutura para notícias 
+Estrutura para notícias :newspaper:
