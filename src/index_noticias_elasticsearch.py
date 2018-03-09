@@ -5,27 +5,34 @@ Created on Fri Mar  9 10:54:54 2018
 @author: jonatha.costa
 """
 
+from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk
 import pandas as pd 
-import numpy as np 
-import pyes 
 import json
-import 
 
-df = pd.read_csv("mediacloud_export.csv",sep=";",decimal=".")
+df = pd.read_csv("mediacloud_export.csv",sep=",")
 
-df["no_index"] = [x+1 for x in range(len(df["id"]))]
-
+df["id"] = [x+1 for x in range(len(df["id"]))]
 tmp = df.to_json(orient = "records")
-
-df_json= json.loads(tmp)
-print df_json[0]
 
 index_name = 'estadao'
 type_name = 'noticias'
-es= pyes.ES()
 
 
+es = Elasticsearch('localhost')
 
+actions = [
+     {
+     '_index' : index_name,
+     '_type' : type_name,
+     '_id': df['id'],
+     '_website' : df['website'],
+     '_url' : df['url'],
+     '_publication_date' : df['publication_date'],
+     '_title': df['title'],
+     '_text': df['text'],
+     }
+for df in json.loads(tmp)
+]
 
-for doc in df_json:
-    es.index(doc, index_name, type_name, id=doc['no_index'])
+bulk(es, actions)
