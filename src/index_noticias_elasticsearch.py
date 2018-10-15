@@ -5,12 +5,6 @@ Created on Fri Mar  9 10:54:54 2018
 @author: jonatha.costa
 """
 
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 14 16:02:43 2018
-
-@author: jonatha.costa
-"""
 
 
 from elasticsearch import Elasticsearch
