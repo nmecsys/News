@@ -51,7 +51,22 @@ def pesquisa(termo = None):
                 }
         })
     
-    return(print("Foram encontrados %d noticias que se encaixam com o termo pesquisado!" % page['hits']['total'] ))
+   count= es.search(
+      index = 'extra',
+      doc_type = 'noticias',
+      scroll = '2m',
+      size = 0,
+      request_timeout=30,
+      body = {
+            'query': {
+                'count' : {
+                      '_text':  str(termo)
+                        }
+                }
+        })
+    
+    print("Total de noticias é de %d" % count['hits']['total'])
+    return(print("Foram encontrados %d noticias que se encaixam com o termo pesquisado!" % page['hits']['total']))
 
 pesquisa(termo = 'Dilma')
 
