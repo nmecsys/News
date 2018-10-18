@@ -19,24 +19,22 @@ import os
 from cryptography.fernet import Fernet
 
 
-file = open('key_elasticsearch.key','rb')
-key = file.read()
-file.close()
+def connection():    
+    file = open('key_elasticsearch.key','rb')
+    key = file.read()
+    file.close()
+    f = Fernet(key)
+    credenciais = pd.read_table('crendialsENCRIPT.txt').columns[0].encode()
+    credenciais = f.decrypt(credenciais).decode()
+    es = Elasticsearch(credenciais)
+    return(es)
 
+# estabelece a conexao com o elasticsearch
 
-f = Fernet(key)
-credenciais = pd.read_table('crendialsENCRIPT.txt').columns[0].encode()
-
-credenciais = f.decrypt(credenciais).decode()
-es = Elasticsearch(credenciais)
-
-
-
-df = pd.DataFrame()
-
+es = connection()
 
 def pesquisa(termo = None):
-
+    
     page = es.search(
       index = 'extra',
       doc_type = 'noticias',
@@ -76,7 +74,7 @@ pesquisa(termo = 'Dilma')
 sid = page['_scroll_id']
 scroll_size = page['hits']['total']
   
-
+df = pd.DataFrame()
   # Start scrolling
 while (scroll_size > 0):
    print("Scrolling...")
